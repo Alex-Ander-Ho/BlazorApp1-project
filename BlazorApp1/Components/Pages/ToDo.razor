@@ -1,0 +1,45 @@
+﻿@page "/todo"
+@rendermode InteractiveServer
+@inject IDataService data
+
+
+<h3>ToDo</h3>
+@foreach (var user in users!)
+{
+	<p>
+		Студент: @user.Id - @user.Name
+	</p>
+}
+<button @onclick="AddStudents">
+	Add
+</button>
+<button @onclick="UpdateUser">
+	Update User 1
+</button>
+
+@code {
+	IEnumerable<StudentDTO>? users;
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		users = data.GetUserInfo();
+	}
+
+	void AddStudents()
+	{
+		data.SaveUser(new()
+			{
+				Name = "TestNew",
+				Teather = new()
+				{
+					Name = "Учитель1"
+				}
+			});
+	}
+	void UpdateUser()
+	{
+		var user = data.GetUserInfo().First(x => x.Id == 1);
+		user.Name += "*";
+		data.SaveUser(user);
+	}
+}
